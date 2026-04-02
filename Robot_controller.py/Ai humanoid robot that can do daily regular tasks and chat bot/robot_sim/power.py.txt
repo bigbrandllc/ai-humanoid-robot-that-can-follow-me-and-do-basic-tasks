@@ -1,0 +1,16 @@
+from config import LOW_POWER_THRESHOLD, RECHARGE_RATE
+
+class PowerSystem
+    def __init__(self)
+        self.level = 100
+
+    def consume(self, amount)
+        self.level = max(0, self.level - amount)
+        print(f[Power] {self.level}% remaining)
+
+    def recharge(self)
+        print([Power] Recharging...)
+        self.level = min(100, self.level + RECHARGE_RATE)
+
+    def is_low(self)
+        return self.level = LOW_POWER_THRESHOLD
