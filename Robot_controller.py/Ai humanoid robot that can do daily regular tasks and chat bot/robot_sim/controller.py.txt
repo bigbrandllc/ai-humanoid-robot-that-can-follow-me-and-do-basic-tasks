@@ -1,0 +1,68 @@
+import time
+import random
+
+from power import PowerSystem
+from position import PositionSystem
+from tasks import TaskManager
+from web_interface import WebInterface
+from language import LanguageModule
+
+class RobotController:
+    def __init__(self):
+        self.power = PowerSystem()
+        self.position = PositionSystem()
+        self.tasks = TaskManager()
+        self.web = WebInterface()
+        self.language = LanguageModule()
+
+        self.follow_mode = False
+        self.active = True
+
+    def execute_task(self, task):
+        command = self.language.interpret(task)
+
+        print(f"[Robot] Executing: {task}")
+        self.power.consume(random.randint(5, 10))
+
+        if "follow me" in command:
+            self.follow_mode = True
+            print("[Robot] Follow mode ON")
+
+        elif "stop following" in command:
+            self.follow_mode = False
+            print("[Robot] Follow mode OFF")
+
+        elif "sit in passenger seat" in command:
+            self.position.go_to_vehicle_seat()
+
+        elif "search" in command:
+            result = self.web.fetch(task)
+            print(f"[Robot] {result}")
+
+        elif "translate" in command:
+            print(self.language.translate(task))
+
+        else:
+            print("[Robot] Task complete")
+
+    def loop(self):
+        print("[Robot] System started")
+
+        while self.active:
+            if self.power.is_low():
+                self.power.recharge()
+                time.sleep(1)
+                continue
+
+            self.position.update_person_position()
+
+            if self.follow_mode and not self.position.in_vehicle:
+                self.position.move_toward_person()
+
+            task = self.tasks.get_next_task()
+            if task:
+                self.execute_task(task)
+            else:
+                print("[Robot] Idle")
+
+            time.sleep(1)
