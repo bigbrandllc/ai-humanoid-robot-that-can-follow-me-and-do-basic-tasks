@@ -1,0 +1,15 @@
+from controller import RobotController
+
+if __name__ == "__main__":
+    robot = RobotController()
+
+    # Add demo tasks
+    robot.tasks.add_task("Follow me")
+    robot.tasks.add_task("Search weather")
+    robot.tasks.add_task("Stop following")
+    robot.tasks.add_task("Sit in passenger seat")
+
+    try:
+        robot.loop()
+    except KeyboardInterrupt:
+        print("\n[Robot] Shutdown")
