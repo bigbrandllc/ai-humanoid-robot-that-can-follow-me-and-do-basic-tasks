@@ -1,0 +1,33 @@
+import random
+from config import SAFE_DISTANCE, MAX_STEP
+
+class PositionSystem:
+    def __init__(self):
+        self.robot_pos = 0.0
+        self.person_pos = 10.0
+        self.in_vehicle = False
+
+    def update_person_position(self):
+        self.person_pos += random.uniform(-2, 2)
+
+    def move_toward_person(self):
+        distance = self.person_pos - self.robot_pos
+
+        if abs(distance) < SAFE_DISTANCE:
+            print("[Movement] Maintaining safe distance.")
+            return
+
+        step = min(abs(distance) - SAFE_DISTANCE, MAX_STEP)
+        direction = 1 if distance > 0 else -1
+        self.robot_pos += direction * step
+
+        print("[Movement] Adjusting position to maintain distance.")
+        self.report()
+
+    def go_to_vehicle_seat(self):
+        self.in_vehicle = True
+        self.robot_pos = "PASSENGER_SEAT"
+        print("[Movement] Robot is now in passenger seat.")
+
+    def report(self):
+        print(f"[Position] Robot: {self.robot_pos}, Person: {self.person_pos:.2f}")
