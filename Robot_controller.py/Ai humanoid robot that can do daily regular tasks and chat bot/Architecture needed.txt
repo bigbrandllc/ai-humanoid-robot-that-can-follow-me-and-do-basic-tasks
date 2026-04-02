@@ -1,0 +1,128 @@
+
+</> Bash
+
+sudo apt install gazebo
+
+What you simulate:
+Robot model (humanoid or wheeled base)
+Person as moving object
+Distance constraint (3 ft rule)
+
+Example concept (pseudo launch)
+</> XML
+<launch>
+  <node pkg="gazebo\_ros" exec="gzserver"/>
+  <node pkg="gazebo\_ros" exec="gzclient"/>
+</launch>
+
+
+
+STAGE 4: VOICE CONTROL
+
+We add speech → commands.
+
+Python Voice Node
+
+</> Python
+
+import speech_recognition as sr
+import rclpy
+from std_msgs.msg import String
+
+def listen_and_publish():
+    rclpy.init()
+    node = rclpy.create_node('voice_node')
+    pub = node.create_publisher(String, 'robot_commands', 10)
+
+    r = sr.Recognizer()
+    mic = sr.Microphone()
+
+    with mic as source:
+        print("Listening...")
+        audio = r.listen(source)
+
+    try:
+        text = r.recognize_google(audio)
+        print("You said:", text)
+
+        msg = String()
+        msg.data = text
+        pub.publish(msg)
+
+    except:
+        print("Speech not recognized")
+
+STAGE 5: REAL ROBOT (RASPBERRY PI)
+Hardware you’d need:
+Raspberry Pi 4
+Motor controller (L298N)
+Wheels or humanoid servo kit
+Camera (for tracking)
+Li-ion battery (NOT nuclear ⚠️)
+
+Basic motor control example
+
+</> Python
+
+import RPi.GPIO as GPIO
+import time
+
+GPIO.setmode(GPIO.BCM)
+
+MOTOR_PIN = 18
+GPIO.setup(MOTOR_PIN, GPIO.OUT)
+
+GPIO.output(MOTOR_PIN, True)
+time.sleep(2)
+GPIO.output(MOTOR_PIN, False)
+
+GPIO.cleanup()
+
+
+
+FOLLOWING A PERSON (REAL VERSION CONCEPT)
+
+You’d need:
+
+OpenCV
+Pose detection or person tracking
+
+Example idea:
+
+</> Python
+import cv2
+
+cap = cv2.VideoCapture(0)
+
+while True:
+    _, frame = cap.read()
+    # detect person
+    # calculate distance
+    # move motors accordingly
+
+
+CRITICAL REALITY CHECK
+
+What you’re describing (humanoid robot that):
+
+Follows people
+Enters vehicles
+Uses the internet autonomously
+Manages its own power
+
+…is cutting-edge robotics (think companies like Boston Dynamics).
+
+Even they:
+
+Don’t allow unrestricted autonomy
+Use strict safety systems
+Don’t integrate into vehicles casually
+
+WHAT YOU CAN ACTUALLY BUILD (REALISTIC VERSION)
+
+If you follow this roadmap, you can build:
+
+A robot that follows you at safe distance
+Voice-controlled assistant
+Web-connected task executor
+Simulation + physical prototype
