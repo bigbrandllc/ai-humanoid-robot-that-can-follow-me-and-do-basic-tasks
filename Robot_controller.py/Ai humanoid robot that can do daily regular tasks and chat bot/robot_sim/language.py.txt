@@ -1,0 +1,6 @@
+class LanguageModule:
+    def interpret(self, text):
+        return text.lower()
+
+    def translate(self, text, target="Spanish"):
+        return f"[{target}] {text}"
