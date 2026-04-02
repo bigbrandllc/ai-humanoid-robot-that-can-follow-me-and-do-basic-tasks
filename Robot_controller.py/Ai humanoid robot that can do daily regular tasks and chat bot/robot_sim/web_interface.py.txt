@@ -1,0 +1,4 @@
+class WebInterface:
+    def fetch(self, query):
+        print(f"[Web] Fetching: {query}")
+        return f"Simulated result for '{query}'"
